@@ -7,6 +7,8 @@ const workerSource = readFileSync(new URL("../public/sw.js", import.meta.url), "
 const EMAIL = "admin@example.test";
 const QUEUE = "veloxiaPendingChangesV1";
 const ADMIN = "veloxiaAdminEmailV1";
+const SESSION = "veloxia-admin-session";
+const savedSession = JSON.stringify({ refresh_token: "refresh", user: { email: EMAIL } });
 
 const delay = () => new Promise((resolve) => setTimeout(resolve, 20));
 
@@ -44,9 +46,20 @@ function startApp(storage, network) {
   const database = {
     from() {
       return {
-        select() { return { order: async () => network.online
-          ? { data: network.rows.map((row) => ({ ...row })) }
-          : { error: { message: "Failed to fetch" } } }; },
+        select() { return {
+          order: async () => network.online
+            ? { data: network.rows.map((row) => ({ ...row })) }
+            : { error: { message: "Failed to fetch" } },
+          eq: async (column, id) => network.online
+            ? { data: network.rows.filter((row) => row.id === id).map((row) => ({ id: row.id })) }
+            : { error: { message: "Failed to fetch" } }
+        }; },
+        update(values) { return { eq: (column, id) => ({ select: async () => {
+          if (!network.online) return { error: { message: "Failed to fetch" } };
+          const row = network.rows.find((item) => item.id === id);
+          if (row) Object.assign(row, values);
+          return { data: row ? [{ id }] : [] };
+        } }) }; },
         async insert(row) {
           if (!network.online) return { error: { message: "Failed to fetch" } };
           if (network.reject) return { error: { message: "server rejected row", code: "23514" } };
@@ -57,9 +70,12 @@ function startApp(storage, network) {
     },
     async rpc() { return network.online ? { data: true } : { error: { message: "Failed to fetch" } }; },
     channel() { return { on() { return this; }, subscribe() { return this; } }; },
-    auth: { onAuthStateChange(callback) {
-      setTimeout(() => callback("INITIAL_SESSION", network.session === false ? null : { user: { email: EMAIL } }), 0);
-    } }
+    auth: {
+      async getSession() { return { data: { session: network.session === false ? null : { user: { email: EMAIL } } } }; },
+      onAuthStateChange(callback) {
+        setTimeout(() => callback("INITIAL_SESSION", network.session === false ? null : { user: { email: EMAIL } }), 0);
+      }
+    }
   };
   const navigator = { get onLine() { return network.online; } };
   const localStorage = {
@@ -141,12 +157,55 @@ async function testStorageFailure() {
 }
 
 async function testExpiredOfflineSession() {
+  const storage = { values: new Map([[ADMIN, EMAIL], [SESSION, savedSession]]), fail: false };
+  const network = { online: false, rows: [], reject: false, session: false };
+  let app = startApp(storage, network);
+  assert.equal(app.element("body").classList.contains("is-admin"), true);   // before Supabase answers
+  await delay();
+  await enterScores(app, "Session expired race");
+  assert.equal(JSON.parse(storage.values.get(QUEUE)).length, 1);
+
+  // Back online, but the expired login is not renewed yet: keep the change and the admin, don't ask to log in.
+  network.online = true;
+  app = startApp(storage, network);
+  await delay();
+  assert.equal(app.element("body").classList.contains("is-admin"), true);
+  assert.equal(JSON.parse(storage.values.get(QUEUE)).length, 1);
+  assert.doesNotMatch(app.element("syncNote").textContent, /Log in/);
+
+  network.session = true;
+  app.listeners.get("online")();
+  await delay();
+  assert.equal(network.rows.length, 1);
+  assert.equal(JSON.parse(storage.values.get(QUEUE)).length, 0);
+}
+
+async function testLoggedOutDeviceStaysViewer() {
   const storage = { values: new Map([[ADMIN, EMAIL]]), fail: false };
   const network = { online: false, rows: [], reject: false, session: false };
   const app = startApp(storage, network);
   await delay();
-  await enterScores(app, "Session expired race");
-  assert.equal(JSON.parse(storage.values.get(QUEUE)).length, 1);
+  assert.equal(app.element("body").classList.contains("is-admin"), false);
+}
+
+async function testEditOfEventDeletedElsewhere() {
+  const storage = { values: new Map([[ADMIN, EMAIL]]), fail: false };
+  const network = { online: false, rows: [], reject: false };
+  const app = startApp(storage, network);
+  await delay();
+  await enterScores(app, "Deleted race");
+  const id = JSON.parse(storage.values.get(QUEUE))[0].id;
+  storage.values.set(QUEUE, JSON.stringify([
+    { op: "update", id, ev: { name: "Deleted race", scores: { fatima: 9, carmel: 0, lourdes: 0, velankani: 0 } } },
+    { op: "add", id: crypto.randomUUID(), ev: { name: "Later race", scores: { fatima: 1, carmel: 1, lourdes: 1, velankani: 1 } }, created_at: new Date().toISOString() }
+  ]));
+  const later = startApp(storage, network);
+  await delay();
+  network.online = true;
+  later.listeners.get("online")();
+  await delay();
+  assert.deepEqual(network.rows.map((row) => row.name), ["Later race"]);
+  assert.equal(JSON.parse(storage.values.get(QUEUE)).length, 0);
 }
 
 async function testWorkerInstall() {
@@ -197,5 +256,7 @@ await testOfflineQueue();
 await testRejectedSyncKeepsEdit();
 await testStorageFailure();
 await testExpiredOfflineSession();
+await testLoggedOutDeviceStaysViewer();
+await testEditOfEventDeletedElsewhere();
 await testWorkerInstall();
-console.log("Offline reload, queued edits, reconnect, rejected sync, expired session, storage failure, and app-shell fallback passed.");
+console.log("Offline reload, queued edits, reconnect, rejected sync, expired session, logged-out viewer, edit of a deleted event, storage failure, and app-shell fallback passed.");

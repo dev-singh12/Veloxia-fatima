@@ -96,7 +96,12 @@
     async update(op) {
       const r = await db.from("events").update(rowOf(op.ev)).eq("id", op.id).select("id");
       if (r.error) throw r.error;
-      if (!r.data || !r.data.length) throw notAllowed();
+      if (!r.data || !r.data.length) {
+        // Deleted on another device while this one was offline: the delete wins, so there is nothing left to change.
+        const check = await db.from("events").select("id").eq("id", op.id);
+        if (check.error) throw check.error;
+        if (check.data.length) throw notAllowed();
+      }
     },
     async remove(op) {
       const r = await db.from("events").delete().eq("id", op.id).select("id");
@@ -303,9 +308,19 @@
     render();
   }
 
+  // Admin whose Supabase login is still saved here. Supabase keeps it when renewing fails only for lack of
+  // internet, and deletes it on log out or when the login is no longer valid.
+  function savedLogin() {
+    const s = readJSON(SESSION_KEY, null), email = ls.get(ADMIN_KEY);
+    return s && s.refresh_token && s.user && s.user.email === email ? email : null;
+  }
+
   // true / false, or null when it cannot be checked (offline)
   async function confirmAdmin() {
     try {
+      // Right after reconnecting, an expired login may not be renewed yet. Wait for it instead of logging out.
+      const s = await db.auth.getSession();
+      if (!s.data.session) return savedLogin() ? null : false;
       const r = await db.rpc("is_admin");
       if (r.error) throw r.error;
       return r.data === true;
@@ -370,14 +385,13 @@
   async function syncSession(session) {
     if (!REMOTE || loggingIn) return;
     if (!session) {
-      // A saved session can expire while the device is offline. Keep local entry
-      // available to an admin who logged in here before; Supabase checks on sync.
-      const cachedEmail = !navigator.onLine ? ls.get(ADMIN_KEY) : null;
+      // A saved session can expire while the device is offline (or on Wi-Fi with no internet).
+      // Keep local entry available to an admin who logged in here before; Supabase checks on sync.
+      const cachedEmail = savedLogin();
       setAdmin(!!cachedEmail, cachedEmail);
       updateStatus();
       return;
     }
-    if (isAdmin && adminEmail === session.user.email) return;
     let ok = await confirmAdmin();
     if (ok === null) ok = ls.get(ADMIN_KEY) === session.user.email;   // offline: trust this device's last check; Supabase re-checks every change on sync
     else if (ok) ls.set(ADMIN_KEY, session.user.email);
@@ -535,7 +549,9 @@
   if (new URLSearchParams(location.search).get("display") === "1") {
     document.body.classList.add("displaymode");
   }
-  setAdmin(!REMOTE, null);
+  // Restore a saved admin login straight away: without internet, Supabase can take ~30 s to report it.
+  const restored = REMOTE ? savedLogin() : null;
+  setAdmin(!REMOTE || !!restored, restored);
   refreshView();
 
   if (REMOTE) {
