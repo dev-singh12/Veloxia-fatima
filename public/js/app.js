@@ -223,7 +223,7 @@
   const plural = (n, w) => n + " " + w + (n === 1 ? "" : "s");
   function setNote(cls, text) {
     const note = $("syncNote");
-    note.className = "muted offline-note" + (cls ? " " + cls : "");
+    note.className = "muted offline-note" + (cls ? " " + cls : "") + (text ? "" : " hidden");
     note.textContent = text;
   }
   function updateStatus() {
@@ -243,7 +243,7 @@
       setNote("is-offline", "● OFFLINE — showing scores saved on this device. You can keep entering points.");
       footer = "offline";
     } else {
-      setNote("", subscribed ? "✓ ONLINE — scores saved to the cloud and live on every screen." : "✓ ONLINE — scores saved to the cloud.");
+      setNote("", "");
       footer = subscribed ? "live" : "";
     }
     $("footerStatus").innerHTML = REMOTE
