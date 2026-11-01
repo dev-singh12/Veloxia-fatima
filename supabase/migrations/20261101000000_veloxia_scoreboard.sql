@@ -59,15 +59,7 @@ grant select on public.events to anon, authenticated;
 revoke insert, update, delete on public.events from anon;
 grant insert, update, delete on public.events to authenticated;
 
--- 4. Remove the old PIN system if it was installed ----------------------
-drop function if exists public.verify_pin(text);
-drop function if exists public.add_event(text,text,numeric,numeric,numeric,numeric,timestamptz);
-drop function if exists public.update_event(text,uuid,text,numeric,numeric,numeric,numeric);
-drop function if exists public.delete_event(text,uuid);
-drop function if exists public.clear_events(text);
-drop schema if exists private cascade;
-
--- 5. Live updates on every screen ----------------------------------------
+-- 4. Live updates on every screen ----------------------------------------
 do $$ begin
   alter publication supabase_realtime add table public.events;
 exception when duplicate_object then null; end $$;
