@@ -1,0 +1,215 @@
+:root{--navy:#082e68;--blue:#0757cf;--gold:#ffd51c;--fatima:#f7c900;--carmel:#d7193f;--lourdes:#078c60;--velankani:#7025bf;--ink:#102b52;--paper:#f4f8fd}
+*{box-sizing:border-box}body{margin:0;background:var(--paper);font-family:Arial,Helvetica,sans-serif;color:var(--ink)}
+header{background:linear-gradient(120deg,#061e4b,#123f83);color:#fff;padding:18px 2vw;display:flex;align-items:center;justify-content:space-between;gap:20px}
+.brand{font-size:clamp(24px,3.5vw,52px);font-weight:900;letter-spacing:1px;text-align:center;flex:1}.brand small{display:block;color:#ffe12d;font-size:clamp(15px,2.2vw,31px);margin-top:4px}.sub{font-size:clamp(10px,1.2vw,17px);letter-spacing:2px;margin-top:8px}
+.crest{font-size:clamp(35px,5vw,68px);min-width:70px;text-align:center}.wrap{padding:14px 1.5vw 24px}.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:14px}
+.card{border-radius:12px;color:white;padding:15px 10px;text-align:center;box-shadow:0 3px 7px #0002;border:2px solid #ffffff88}.card.fatima{background:linear-gradient(135deg,#ffe83b,#ffca00);color:#092f70}.card.carmel{background:linear-gradient(135deg,#f1264b,#bf002b)}.card.lourdes{background:linear-gradient(135deg,#0da66f,#007b4d)}.card.velankani{background:linear-gradient(135deg,#8b32d6,#5c13a7)}
+.house{font-size:clamp(12px,1.5vw,22px);font-weight:900}.score{font-size:clamp(34px,4.3vw,61px);font-weight:900;line-height:1.12;margin:5px}.rank{font-weight:800;font-size:clamp(12px,1.4vw,19px)}
+.columns{display:grid;grid-template-columns:minmax(300px, .9fr) minmax(450px,1.5fr);gap:14px}.panel{background:#fff;border:1px solid #9fc8ee;border-radius:12px;overflow:hidden;margin-bottom:12px}.panel h2{margin:0;background:var(--navy);color:white;padding:10px 14px;font-size:clamp(16px,1.6vw,23px)}.inside{padding:14px}.muted{color:#526b89;font-size:14px;line-height:1.45}label{display:block;font-weight:800;margin:12px 0 6px}input{width:100%;padding:11px 12px;border:1px solid #b7c7d9;border-radius:8px;font-size:16px;background:#fff;color:var(--ink)}input:focus{outline:2px solid #80baff}.pointgrid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:10px}.pointbox{padding:9px;border-radius:9px;border:1px solid #ccc}.pointbox.fatima{background:#fff9c9;border-color:#e5bf00}.pointbox.carmel{background:#fff0f2;border-color:#f2a2b0}.pointbox.lourdes{background:#e8f8ef;border-color:#8ed1ae}.pointbox.velankani{background:#f5edff;border-color:#c7a2f1}.pointbox label{margin:0 0 6px;font-size:14px}.buttons{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}button,.button{border:0;border-radius:8px;padding:11px 14px;background:var(--blue);color:white;font-size:15px;font-weight:800;cursor:pointer}button:hover{filter:brightness(.94)}button.secondary{background:#e7eef8;color:#143a68}button.danger{background:#a52232}.primary{width:100%;font-size:17px;margin-top:12px;padding:14px}.tablewrap{overflow-x:auto}table{width:100%;border-collapse:collapse;font-size:clamp(12px,1.05vw,16px)}th{background:#e8f1fc;text-align:left}td,th{padding:9px 10px;border-bottom:1px solid #dce5ef}td.num,th.num{text-align:center;font-weight:800}.house-dot{display:inline-block;width:13px;height:13px;border-radius:50%;margin-right:8px}.totalrow{background:#eef6ff;font-weight:900}.eventhead{display:flex;justify-content:space-between;align-items:center;gap:10px}.badge{background:#e8f1fc;color:#123766;padding:5px 10px;border-radius:20px;font-size:13px;white-space:nowrap}.event-actions button{padding:6px 9px;font-size:12px}.footer{font-size:12px;color:#657d98;text-align:center;padding:8px}.offline-note{margin:12px 0 4px;padding:9px 11px;border:1px solid #2d9b70;border-radius:8px;background:#e8fff3;color:#075b3b;font-weight:800}.hidden{display:none!important}.displaymode header{padding:12px 2vw}.displaymode .wrap{padding-top:10px}.displaymode .columns{grid-template-columns:1fr}.displaymode .adminpanel{display:none!important}.displaymode .score{font-size:clamp(40px,5vw,78px)}.displaymode .card{padding:18px 10px}.displaymode .panel h2{font-size:clamp(18px,1.8vw,28px)}.displaymode table{font-size:clamp(14px,1.3vw,20px)}.displaymode td,.displaymode th{padding:10px 12px}.displaymode .event-actions{display:none}.displaymode .footer{display:none}
+@media(max-width:850px){header{padding:12px}.crest{min-width:35px}.cards{grid-template-columns:repeat(2,1fr)}.columns{grid-template-columns:1fr}.displaymode .cards{grid-template-columns:repeat(2,1fr)}}
+@media print{.adminpanel,.buttons,.event-actions{display:none!important}body{background:#fff}.panel,.card{break-inside:avoid}}
+
+/* Premium, high-contrast outdoor/daylight theme */
+/* Offline mode: system fonts only; no external font or network dependency. */
+:root{--navy:#07172f;--blue:#0878ff;--gold:#ffd447;--fatima:#f7c900;--carmel:#d7193f;--lourdes:#078c60;--velankani:#7025bf;--ink:#f7faff;--paper:#061225}
+body{background:radial-gradient(ellipse at 50% -10%,#1a3d70 0%,#091b36 42%,#030a16 100%);color:#f7faff;font-family:'Montserrat',Arial,Helvetica,sans-serif}
+header{background:linear-gradient(110deg,#020916 0%,#0b2146 45%,#07152c 100%);border-bottom:3px solid #eab52e;box-shadow:0 8px 24px #0008;padding:12px 2vw;min-height:150px;position:relative}
+header:after{content:"";position:absolute;left:0;right:0;bottom:0;height:3px;background:linear-gradient(90deg,#ffd84b,#fff1a0,#d28b00,#ffd84b)}
+.logo-wrap,.trophy-wrap{width:clamp(82px,11vw,150px);height:clamp(82px,11vw,150px);flex:0 0 clamp(82px,11vw,150px);display:flex;align-items:center;justify-content:center}
+.school-logo{width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 3px 8px #0009)}
+.trophy-img{width:100%;height:100%;filter:drop-shadow(0 5px 8px #000b)}
+.brand{font-family:'Cinzel',Georgia,serif;font-size:clamp(25px,3.5vw,54px);font-weight:900;letter-spacing:clamp(1px,.22vw,3px);line-height:1.12;text-shadow:0 3px 0 #0008,0 0 18px #ffd44722}
+.brand small{font-family:'Montserrat',Arial,sans-serif;color:#ffe45f;font-weight:900;font-size:clamp(15px,2.15vw,31px);letter-spacing:1px;text-shadow:0 2px 0 #0007}
+.sub{font-family:'Montserrat',Arial,sans-serif;color:#eaf2ff;font-size:clamp(9px,1.1vw,16px);font-weight:800;letter-spacing:clamp(.5px,.13vw,2px)}
+.wrap{padding:16px 1.5vw 24px}
+.card{border-radius:14px;padding:16px 10px;border:2px solid #ffffffa8;box-shadow:0 5px 14px #0007, inset 0 1px 0 #ffffff55}
+.card.fatima{background:linear-gradient(145deg,#fff36a 0%,#ffd51a 48%,#e7a900 100%);color:#09234b;border-color:#fff19a}
+.card.carmel{background:linear-gradient(145deg,#ff3157,#c6002c);border-color:#ffb2c1}
+.card.lourdes{background:linear-gradient(145deg,#13bd80,#006e4b);border-color:#a2ffce}
+.card.velankani{background:linear-gradient(145deg,#a449f2,#5414a5);border-color:#dfbdff}
+.house{font-family:'Montserrat',Arial,sans-serif;font-weight:900;text-shadow:0 1px 1px #0002}
+.score{font-family:'Montserrat',Arial,sans-serif;font-weight:900;text-shadow:0 3px 3px #0002}
+.panel{background:linear-gradient(145deg,#10294b,#091a32);border:1px solid #4776a8;border-radius:12px;box-shadow:0 6px 18px #0005;overflow:hidden}
+.panel h2{background:linear-gradient(90deg,#123a70,#0a2450);color:#fff;border-bottom:1px solid #4274aa;font-family:'Montserrat',Arial,sans-serif;font-weight:900}
+.inside{color:#f7faff}
+.muted{color:#d4e3f7}
+label{color:#f4f8ff}
+input{background:#f9fbff;color:#122b4d;border:2px solid #9bb9dc;font-family:'Montserrat',Arial,sans-serif}
+input::placeholder{color:#647b98}
+.pointbox label{color:#132b4b}
+button{background:linear-gradient(180deg,#1683ff,#0754cb);box-shadow:0 3px 8px #0004}
+button.secondary{background:#dceaff;color:#102f5c;box-shadow:none}
+button.danger{background:linear-gradient(180deg,#ed3b50,#a80f2b)}
+.badge{background:#ffe06a;color:#15294b;font-weight:900}
+table{color:#f8fbff}
+th{background:#dceaff;color:#102b52}
+td,th{border-bottom:1px solid #345071}
+td{background:#102442}
+tbody tr:nth-child(even) td{background:#142d50}
+.totalrow td{background:#e3efff!important;color:#102b52!important}
+#standings tr:first-child td{background:#fff1a6!important;color:#09254d!important}
+#standings td.num{font-size:1.08em}
+#eventRows td:nth-child(3){color:#ffe34d}#eventRows td:nth-child(4){color:#ff9bac}#eventRows td:nth-child(5){color:#75efb7}#eventRows td:nth-child(6){color:#d7a9ff}
+.footer{color:#b6cce8}
+.displaymode .adminpanel{display:none!important}
+.displaymode header{min-height:clamp(110px,15vh,170px)}
+.displaymode .logo-wrap,.displaymode .trophy-wrap{width:clamp(90px,12vw,165px);height:clamp(90px,12vw,165px);flex-basis:clamp(90px,12vw,165px)}
+@media(max-width:850px){header{min-height:100px;gap:8px}.brand{letter-spacing:0}.sub{letter-spacing:0}.logo-wrap,.trophy-wrap{width:70px;height:70px;flex-basis:70px}}
+
+
+/* FATIMA VELOXIA 2K26 — golden-spark, red and deep-blue championship theme */
+:root{--navy:#18070b;--blue:#073b8d;--gold:#ffd44d;--fatima:#f6c928;--carmel:#d71935;--lourdes:#0a754d;--velankani:#003b91;--ink:#fff8e7;--paper:#090b18}
+body{
+ color:#fff8e7;
+ background:
+   radial-gradient(ellipse at 50% 0%,rgba(145,36,26,.48),transparent 44%),
+   radial-gradient(ellipse at 10% 65%,rgba(255,183,36,.12),transparent 32%),
+   radial-gradient(ellipse at 90% 58%,rgba(255,183,36,.10),transparent 30%),
+   linear-gradient(180deg,#16080c 0%,#07152d 47%,#050812 100%);
+ background-attachment:fixed;
+}
+/* Tiny gold sparkle field evokes a festive sports-day stage without obscuring text. */
+body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;opacity:.42;background-image:radial-gradient(circle at 7% 18%,#ffe58a 0 1px,transparent 2px),radial-gradient(circle at 19% 67%,#f6bd35 0 1px,transparent 2px),radial-gradient(circle at 34% 12%,#fff0b0 0 1px,transparent 2px),radial-gradient(circle at 52% 83%,#ffd24a 0 1px,transparent 2px),radial-gradient(circle at 69% 22%,#ffe58a 0 1px,transparent 2px),radial-gradient(circle at 86% 73%,#f6bd35 0 1px,transparent 2px),radial-gradient(circle at 95% 34%,#fff0b0 0 1px,transparent 2px);background-size:230px 180px,280px 230px,310px 210px,270px 250px,260px 180px,320px 240px,240px 220px}
+header{background-image:linear-gradient(90deg,rgba(3,12,28,.55),rgba(3,12,28,.34),rgba(3,12,28,.55)),url("../assets/header-bg.jpg");background-position:center;background-size:cover;background-repeat:no-repeat;border-bottom:4px solid #e8b52e;box-shadow:0 8px 26px #000b;padding:10px 2vw;min-height:clamp(120px,16vw,180px)}
+header:after{height:4px;background:linear-gradient(90deg,#6e130f,#ffe78b,#d89b16,#fff1a6,#a81218,#ffe78b,#6e130f)}
+.brand{font-size:clamp(27px,4.25vw,66px);color:#fff0ae;letter-spacing:clamp(.5px,.25vw,4px);-webkit-text-stroke:.7px #7b160f;text-shadow:0 2px 0 #521008,0 4px 0 #05050a,2px 6px 8px #000,0 0 16px #ffca3a88;line-height:1.05}
+.brand small{font-size:clamp(13px,1.8vw,27px);color:#ffe05b;letter-spacing:clamp(.5px,.13vw,2px);text-shadow:0 2px 0 #5d120b,1px 3px 3px #000;-webkit-text-stroke:.25px #8b1b10}
+.sub{color:#fff8e8;text-shadow:0 2px 3px #000,0 0 8px #ffce4d55}
+.logo-wrap,.trophy-wrap{width:clamp(82px,10vw,145px);height:clamp(82px,10vw,145px);flex-basis:clamp(82px,10vw,145px)}
+.school-logo{filter:drop-shadow(0 0 7px #ffcc45aa) drop-shadow(0 4px 5px #000)}
+.trophy-img{filter:drop-shadow(0 0 8px #ffca39aa) drop-shadow(0 5px 7px #000)}
+.cards{gap:12px}
+.card{position:relative;border-radius:11px;padding:15px 9px 13px;border:3px solid #ffd86b;box-shadow:0 0 0 2px #3a150d,0 5px 14px #000a,inset 0 0 0 2px #ffffff38,inset 0 0 22px #fff2;}
+.card:before{content:"";position:absolute;inset:4px;border:1px solid #fff7a8;border-radius:6px;pointer-events:none}
+.card.fatima{background:linear-gradient(145deg,#fff077 0%,#f7c620 43%,#b77a08 100%);color:#241007;border-color:#ffe58a}
+.card.carmel{background:linear-gradient(145deg,#ff4b55 0%,#d10c25 52%,#740b1b 100%);color:#fff8e7;border-color:#ffd05b}
+.card.lourdes{background:linear-gradient(145deg,#11865b 0%,#075a3e 58%,#033b2b 100%);color:#fff8e7;border-color:#ffd05b}
+.card.velankani{background:linear-gradient(145deg,#0754b9 0%,#003b91 50%,#001a4c 100%);color:#fff8e7;border-color:#ffd05b}
+.house{font-family:'Cinzel',Georgia,serif;font-size:clamp(12px,1.45vw,22px);letter-spacing:.5px;text-shadow:0 2px 2px #0007,0 0 4px #0003}
+.score{font-family:'Courier New','Lucida Console',monospace;font-size:clamp(36px,4.5vw,64px);font-weight:900;letter-spacing:2px;font-variant-numeric:tabular-nums;color:#fff0a0;background:linear-gradient(180deg,#07101c,#111d2c);border:2px solid #d9a52a;border-radius:9px;display:inline-block;min-width:66%;padding:0 7px;text-shadow:0 0 5px #ffcf42,0 0 13px #ffb900aa,inset 0 2px 3px #000;box-shadow:inset 0 3px 8px #000b,0 2px 0 #fff4}
+.card.fatima .score{color:#ffdc4d}.rank{font-family:'Cinzel',Georgia,serif;text-shadow:0 2px 3px #0009}
+.columns{gap:13px}
+.panel{background:linear-gradient(145deg,#101c30f5,#050d1cf7);border:2px solid #b98928;border-radius:12px;box-shadow:0 0 0 2px #270c0c,0 7px 20px #0009,inset 0 0 24px #c18c1d10}
+.panel h2{background:linear-gradient(90deg,#68131a,#29111b 52%,#092b5a);color:#ffe17a;border-bottom:2px solid #d6a52f;text-shadow:0 2px 2px #000,0 0 6px #ffce4a44;font-family:'Cinzel',Georgia,serif;letter-spacing:.3px}
+.inside{color:#fff7e6}.muted{color:#e5d8c5}label{color:#fff0c0}
+input{background:#fff8e8;color:#111827;border:2px solid #d6aa43;border-radius:7px}input:focus{outline:3px solid #ffdb54}
+.pointbox{border:2px solid #f4c84f;box-shadow:inset 0 0 0 1px #fff5,0 3px 8px #0005}
+.pointbox.fatima{background:linear-gradient(135deg,#fff1a2,#e9ad20);border-color:#ffe17b}
+.pointbox.carmel{background:linear-gradient(135deg,#b90e28,#6e0717);border-color:#ff6676}.pointbox.carmel label{color:#fff8e7}
+.pointbox.lourdes{background:linear-gradient(135deg,#096747,#033c2b);border-color:#5bd5a0}.pointbox.lourdes label{color:#fff8e7}
+.pointbox.velankani{background:linear-gradient(135deg,#064aa8,#001c52);border-color:#69a7ff}.pointbox.velankani label{color:#fff8e7}
+button,.button{background:linear-gradient(180deg,#ffe06a,#c98712);color:#241007;border:1px solid #fff0a0;text-shadow:0 1px #fff5;box-shadow:0 3px 0 #5a260b,0 5px 10px #0005}
+button.primary{background:linear-gradient(180deg,#ffe879,#d89011);color:#251006;font-family:'Cinzel',Georgia,serif;font-weight:900;letter-spacing:.5px;border:2px solid #fff0a2}
+button.secondary{background:linear-gradient(180deg,#f7e7c2,#d6c4a0);color:#1d2638;border:1px solid #fff4d6}button.danger{background:linear-gradient(180deg,#ff4859,#9b071c);color:#fff}
+.badge{background:linear-gradient(180deg,#fff0a1,#e9b72c);color:#241007;border:1px solid #fff0a2}
+table{color:#fff8e8}th{background:linear-gradient(180deg,#f6d46a,#b88721);color:#21120b;text-shadow:0 1px #fff5}td,th{border:1px solid #77572c}td{background:#071323}tbody tr:nth-child(even) td{background:#101b2b}
+.totalrow td{background:linear-gradient(90deg,#ffedaa,#c9962b)!important;color:#21120b!important;font-weight:900}
+#standings tr:first-child td{background:linear-gradient(90deg,#fff1b2,#c99834)!important;color:#1e1007!important}
+#standings td.num,#eventRows td.num,#eventTotals td.num{font-family:'Courier New','Lucida Console',monospace;font-weight:900;font-size:1.12em;text-shadow:0 0 5px #ffc83d30}
+#eventRows td:nth-child(3){color:#ffdf4b}#eventRows td:nth-child(4){color:#ff7c8b}#eventRows td:nth-child(5){color:#5fe0a8}#eventRows td:nth-child(6){color:#75aaff}
+.house-dot{box-shadow:0 0 0 2px #fff5,0 0 8px currentColor}
+.footer{color:#ffdf84;text-shadow:0 2px 4px #000}
+.displaymode header{min-height:clamp(115px,15vh,175px)}
+.displaymode .score{font-size:clamp(42px,5vw,78px)}
+.displaymode .card{padding:18px 9px 16px}
+.displaymode .panel{border-width:2px}
+@media(max-width:850px){.brand{font-size:clamp(20px,4vw,34px)}.brand small{font-size:clamp(11px,2.2vw,17px)}.card{padding:12px 5px}.score{min-width:75%;letter-spacing:0}.columns{grid-template-columns:1fr}}
+
+
+/* Big-screen readability improvements: bolder house labels, standings and event names */
+.displaymode .house{
+  font-family:'Arial Black','Montserrat',Arial,sans-serif !important;
+  font-weight:1000 !important;
+  font-size:clamp(15px,1.8vw,27px) !important;
+  letter-spacing:.7px !important;
+  -webkit-text-stroke:.45px currentColor;
+  text-shadow:0 2px 0 #000,0 3px 7px #000c,0 0 5px #0008 !important;
+}
+.displaymode .score{
+  font-family:'Courier New','Lucida Console',monospace !important;
+  font-weight:1000 !important;
+  font-size:clamp(48px,5.5vw,88px) !important;
+  letter-spacing:3px !important;
+  -webkit-text-stroke:1px currentColor;
+  text-shadow:0 0 5px #ffcf42,0 0 14px #ffb900bb,0 3px 2px #000 !important;
+}
+.displaymode .rank{
+  font-family:'Arial Black',Arial,sans-serif !important;
+  font-weight:1000 !important;
+  font-size:clamp(15px,1.55vw,23px) !important;
+  -webkit-text-stroke:.25px currentColor;
+  text-shadow:0 2px 3px #000d !important;
+}
+.displaymode #standings td:nth-child(2){
+  font-family:'Arial Black','Montserrat',Arial,sans-serif !important;
+  font-size:clamp(17px,1.55vw,24px) !important;
+  font-weight:1000 !important;
+  letter-spacing:.15px;
+  -webkit-text-stroke:.25px currentColor;
+  text-shadow:0 1px 2px #0008;
+}
+.displaymode #standings td:nth-child(3),
+.displaymode #standings td:first-child{
+  font-family:'Courier New','Lucida Console',monospace !important;
+  font-size:clamp(19px,1.8vw,27px) !important;
+  font-weight:1000 !important;
+  -webkit-text-stroke:.4px currentColor;
+  text-shadow:0 1px 2px #0008,0 0 5px #ffc83d30;
+}
+.displaymode #eventRows td:nth-child(2){
+  font-family:'Arial Black','Montserrat',Arial,sans-serif !important;
+  font-weight:900 !important;
+  font-size:clamp(15px,1.25vw,21px) !important;
+  letter-spacing:.1px;
+  color:#fff8e8 !important;
+  -webkit-text-stroke:.25px currentColor;
+  text-shadow:0 1px 2px #000b;
+}
+.displaymode #eventRows td:first-child,
+.displaymode #eventRows td.num,
+.displaymode #eventTotals td{
+  font-weight:900 !important;
+}
+.displaymode #standings td,.displaymode #eventRows td,.displaymode #eventTotals td{
+  padding-top:clamp(10px,.9vh,16px) !important;
+  padding-bottom:clamp(10px,.9vh,16px) !important;
+}
+
+
+
+/* ---- Modal (admin login, change password) — same look as the original event picker ---- */
+.modal{position:fixed;inset:0;z-index:1000;background:#000b;display:flex;align-items:center;justify-content:center;padding:18px}
+.modal.hidden{display:none!important}
+.modal-card{width:min(460px,96vw);max-height:88vh;overflow:auto;background:#091a32;border:2px solid #d6aa43;border-radius:14px;box-shadow:0 12px 40px #000b;padding:16px}
+.modal-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:6px}
+.modal-head h2{margin:0;color:#ffe17a;font-size:clamp(18px,2vw,26px);font-family:'Cinzel',Georgia,serif}
+.modal .error{color:#ff9bac;font-weight:800;margin:10px 0 0;min-height:1em}
+.check{display:flex!important;align-items:center;gap:8px;font-weight:600!important}
+.check input{width:auto}
+#entryPanel{margin-top:14px}.columns{display:block}.event-actions{white-space:nowrap}
+
+/* ---- Sports event dropdown (replaces the separate event picker page) ---- */
+select{width:100%;padding:11px 12px;border:2px solid #d6aa43;border-radius:7px;font-size:16px;background:#fff8e8;color:#111827;font-family:'Montserrat',Arial,sans-serif;font-weight:700;cursor:pointer}
+select:focus{outline:3px solid #ffdb54}
+select:invalid{color:#647b98}
+option{color:#111827}
+
+/* ---- Sync status (keeps the original green offline note style) ---- */
+.offline-note{color:#075b3b}
+.offline-note.is-offline{border-color:#d9a52a;background:#fff6d6;color:#6b4a00}
+.offline-note.is-pending{border-color:#d9a52a;background:#fff1c2;color:#6b4a00}
+.offline-note.is-error{border-color:#ed3b50;background:#ffe6ea;color:#8c0f24}
+.status-dot{display:inline-block;width:9px;height:9px;border-radius:50%;background:#9aa3b5;margin-right:6px;vertical-align:1px}
+.status-dot.live{background:#2fd17f;box-shadow:0 0 0 3px #2fd17f44}
+.status-dot.offline{background:#ffb020}
+
+/* ---- Admin-only controls ---- */
+body:not(.is-admin) .admin-only{display:none!important}
+body.is-admin .viewer-only{display:none!important}
+body:not(.is-admin) .event-actions{display:none}
+body:not(.remote) .remote-only{display:none!important}
+#cancelEditBtn.hidden{display:none!important}
+.card{transition:transform .25s ease}
+.card.bump .score{animation:bump .6s ease}
+@keyframes bump{35%{transform:scale(1.08)}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}

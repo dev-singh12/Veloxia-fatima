@@ -1,0 +1,12 @@
+# Generated at build time from environment variables
+public/js/config.js
+# Local secrets / settings
+.env
+.env.local
+.env.*.local
+# Tooling
+node_modules/
+.vercel/
+supabase/.temp/
+supabase/.branches/
+.DS_Store

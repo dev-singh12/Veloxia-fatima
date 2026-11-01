@@ -1,0 +1,13 @@
+{
+  "name": "veloxia-fatima",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Fatima Veloxia 2K26 live house scoreboard: offline-first, synced with Supabase.",
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/write-config.mjs",
+    "dev": "node scripts/write-config.mjs && node scripts/serve.mjs",
+    "start": "node scripts/serve.mjs"
+  },
+  "engines": { "node": ">=18" }
+}

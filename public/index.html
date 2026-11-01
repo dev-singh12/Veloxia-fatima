@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Fatima Veloxia 2K26 — Live House Scoreboard</title>
+<meta name="description" content="Fatima Veloxia 2K26 live house scoreboard: event-wise points and live ranking for Fatima, Carmel, Lourdes and Velankani houses.">
+<meta name="theme-color" content="#07172f">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="icon" href="/icons/icon-192.png" type="image/png">
+<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Veloxia 2K26">
+<link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+<header><div class="logo-wrap"><img class="school-logo" src="/assets/logo.png" alt="Fatima School Gonda logo"></div><div class="brand">FATIMA VELOXIA 2K26<small>ANNUAL SPORTS &amp; P. T DISPLAY</small><div class="sub">POINTS&nbsp; • &nbsp;EVENT-WISE UPDATE&nbsp; • &nbsp;LIVE RANKING</div></div><div class="trophy-wrap"><svg class="trophy-img" viewBox="0 0 160 180" role="img" aria-label="Gold trophy"><defs><linearGradient id="gold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff3a1"/><stop offset=".28" stop-color="#ffdf43"/><stop offset=".62" stop-color="#f5a900"/><stop offset="1" stop-color="#ffe77a"/></linearGradient><linearGradient id="cupshade" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffec73"/><stop offset="1" stop-color="#d98a00"/></linearGradient></defs><ellipse cx="80" cy="164" rx="49" ry="8" fill="#020a18" opacity=".5"/><path d="M35 25H125L116 83Q110 111 80 119Q50 111 44 83Z" fill="url(#gold)" stroke="#fff0a0" stroke-width="3"/><path d="M35 31H14V49Q15 78 48 83L51 69Q31 64 30 46H39Z" fill="url(#gold)" stroke="#e8a400" stroke-width="4"/><path d="M125 31H146V49Q145 78 112 83L109 69Q129 64 130 46H121Z" fill="url(#gold)" stroke="#e8a400" stroke-width="4"/><path d="M48 35H112L106 79Q102 96 80 103Q58 96 54 79Z" fill="url(#cupshade)"/><path d="M80 42L86 60L105 60L90 72L96 91L80 79L64 91L70 72L55 60L74 60Z" fill="#8d4b00" stroke="#ffe778" stroke-width="2"/><path d="M68 116H92V139H68Z" fill="url(#gold)"/><path d="M53 138H107V151H53Z" rx="3" fill="url(#gold)" stroke="#ffe77a" stroke-width="2"/><path d="M39 151H121V163H39Z" fill="url(#gold)" stroke="#fff0a0" stroke-width="2"/></svg></div></header>
+<div class="wrap">
+<section class="cards" id="cards" aria-live="polite"></section>
+<section class="panel">
+<h2>▤ Event-wise Score Record</h2>
+<div class="tablewrap"><table><thead><tr><th>#</th><th>Event Name</th><th class="num" style="background:#ffe329">Fatima</th><th class="num" style="background:#d7193f;color:white">Carmel</th><th class="num" style="background:#078c60;color:white">Lourdes</th><th class="num" style="background:#7025bf;color:white">Velankani</th><th class="event-actions">Actions</th></tr></thead><tbody id="eventRows"></tbody><tfoot id="eventTotals"></tfoot></table></div>
+</section>
+<section class="panel adminpanel" id="entryPanel">
+<h2 id="entryTitle">✎ Enter points after each event</h2>
+<div class="inside">
+<form id="scoreForm" novalidate>
+<label for="eventName">Select Sports Event</label>
+<select id="eventName" required><option value="">— Select sports event —</option></select>
+<div class="pointgrid">
+<div class="pointbox fatima"><label for="pFatima">Fatima House points</label><input id="pFatima" type="number" inputmode="numeric" min="0" step="1" placeholder="Enter points" required></div>
+<div class="pointbox carmel"><label for="pCarmel">Carmel House points</label><input id="pCarmel" type="number" inputmode="numeric" min="0" step="1" placeholder="Enter points" required></div>
+<div class="pointbox lourdes"><label for="pLourdes">Lourdes House points</label><input id="pLourdes" type="number" inputmode="numeric" min="0" step="1" placeholder="Enter points" required></div>
+<div class="pointbox velankani"><label for="pVelankani">Velankani House points</label><input id="pVelankani" type="number" inputmode="numeric" min="0" step="1" placeholder="Enter points" required></div>
+</div>
+<div class="buttons"><button class="primary" type="submit" id="saveBtn">＋ Update Scoreboard</button><button type="button" class="secondary hidden" id="cancelEditBtn" style="width:100%">Cancel Editing</button></div>
+<p class="muted offline-note" id="syncNote" role="status">● OFFLINE MODE — scores are saved automatically on this computer.</p>
+<div class="buttons">
+<button type="button" class="secondary" id="displayBtn">↗ Open Big-Screen Display</button>
+<button type="button" class="secondary" id="exportBtn">Export Backup</button>
+<button type="button" class="secondary admin-only" id="importBtn">Import Backup</button>
+<button type="button" class="danger admin-only" id="resetBtn">Reset All Scores</button>
+<button type="button" class="viewer-only remote-only" id="loginBtn">🔒 Admin Login</button>
+<button type="button" class="secondary admin-only remote-only" id="changePwBtn">Change Password</button>
+<button type="button" class="secondary admin-only remote-only" id="logoutBtn">Log Out</button>
+<button type="button" class="secondary hidden" id="installBtn">⬇ Install App</button>
+<input id="importFile" type="file" accept="application/json,.json" class="hidden">
+</div>
+</form></div></section>
+
+<div id="loginModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="loginTitle">
+<div class="modal-card"><div class="modal-head"><h2 id="loginTitle">Admin Login</h2><button type="button" class="secondary" data-close>✕ Close</button></div>
+<form id="loginForm" class="inside" style="padding:0" novalidate>
+<p class="muted">Only admins can add or change points. Log in once while online; after that this device can keep entering points without internet.</p>
+<label for="loginEmail">Email</label><input id="loginEmail" type="email" autocomplete="username" inputmode="email" required>
+<label for="loginPassword">Password</label><input id="loginPassword" type="password" autocomplete="current-password" required>
+<label class="check"><input type="checkbox" id="showPw"> Show password</label>
+<button class="primary" type="submit" id="loginSubmit">Log In</button>
+<p class="error" id="loginError" role="alert"></p>
+</form></div></div>
+
+<div id="pwModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="pwTitle">
+<div class="modal-card"><div class="modal-head"><h2 id="pwTitle">Change Password</h2><button type="button" class="secondary" data-close>✕ Close</button></div>
+<form id="pwForm" class="inside" style="padding:0" novalidate>
+<p class="muted">Use at least 10 characters. You need internet to change the password.</p>
+<label for="pwNew">New password</label><input id="pwNew" type="password" autocomplete="new-password" minlength="10" required>
+<label for="pwConfirm">Type it again</label><input id="pwConfirm" type="password" autocomplete="new-password" minlength="10" required>
+<button class="primary" type="submit" id="pwSubmit">Save Password</button>
+<p class="error" id="pwError" role="alert"></p>
+</form></div></div>
+</div><div class="footer"><span id="footerStatus"></span>Fatima School • ANNUAL SPORTS &amp; P. T DISPLAY</div>
+
+<script src="/js/config.js"></script>
+<script src="/js/vendor/supabase.js"></script>
+<script src="/js/app.js"></script>
+</body></html>
