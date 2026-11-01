@@ -37,6 +37,7 @@
   const CACHE_KEY = "veloxiaServerCacheV1";          // last copy received from Supabase
   const QUEUE_KEY = "veloxiaPendingChangesV1";       // changes not yet sent to Supabase
   const ADMIN_KEY = "veloxiaAdminEmailV1";           // last confirmed admin on this device
+  const SESSION_KEY = "veloxia-admin-session";       // Supabase login, kept by Supabase itself
 
   const $ = (id) => document.getElementById(id);
   const ls = {
@@ -49,8 +50,17 @@
   /* ---------- Supabase ---------- */
   const CFG = self.VELOXIA_CONFIG || {};
   const REMOTE = !!(CFG.supabaseUrl && CFG.supabaseKey && window.supabase);
+  // A weak signal can leave a request hanging for minutes. Give up after a while and treat it as offline.
+  const TIMEOUT_MS = 12000;
+  const timedFetch = (url, init) => {
+    const ctl = new AbortController(), timer = setTimeout(() => ctl.abort(), TIMEOUT_MS);
+    return fetch(url, Object.assign({}, init, { signal: ctl.signal }))
+      .catch((err) => { throw ctl.signal.aborted ? new TypeError("Network request timed out") : err; })
+      .finally(() => clearTimeout(timer));
+  };
   const db = REMOTE ? window.supabase.createClient(CFG.supabaseUrl, CFG.supabaseKey, {
-    auth: { persistSession: true, autoRefreshToken: true, storageKey: "veloxia-admin-session" }
+    auth: { persistSession: true, autoRefreshToken: true, storageKey: SESSION_KEY },
+    global: { fetch: timedFetch }
   }) : null;
 
   const num = (v) => { const n = Number(v); return Number.isFinite(n) && n >= 0 ? n : 0; };
@@ -91,7 +101,12 @@
     async remove(op) {
       const r = await db.from("events").delete().eq("id", op.id).select("id");
       if (r.error) throw r.error;
-      if (!r.data || !r.data.length) throw notAllowed();
+      if (!r.data || !r.data.length) {
+        // A previous attempt may have succeeded before its response was lost.
+        const check = await db.from("events").select("id").eq("id", op.id);
+        if (check.error) throw check.error;
+        if (check.data.length) throw notAllowed();
+      }
     },
     async clear() {
       const r = await db.from("events").delete().not("id", "is", null);
@@ -107,7 +122,7 @@
   let events = [];
   let editingId = null;
   let isAdmin = !REMOTE, adminEmail = null, loggingIn = false;
-  let flushing = false, needLogin = false, reachable = true, subscribed = false;
+  let flushing = false, needLogin = false, reachable = true, subscribed = false, syncError = false;
   let prevTotals = null;
 
   function applyOps(list, ops) {
@@ -127,19 +142,30 @@
     updateStatus();
   }
 
-  // Every change goes through here.
-  function commit(op) {
+  // Save the whole change first. Only show it after the browser confirms it is stored.
+  function commitMany(ops) {
     if (!REMOTE) {
-      base = applyOps(base, [op]);
-      if (!ls.set(LOCAL_KEY, JSON.stringify(base))) alert("The browser could not save data locally. Please use Export Backup to protect your scores.");
+      const next = applyOps(base, ops);
+      if (!ls.set(LOCAL_KEY, JSON.stringify(next))) {
+        alert("This browser could not save the change on this device. Free up storage and try again.");
+        return false;
+      }
+      base = next;
       refreshView();
-      return;
+      return true;
     }
-    queue.push(op);
-    ls.set(QUEUE_KEY, JSON.stringify(queue));
+    const next = queue.concat(ops);
+    if (!ls.set(QUEUE_KEY, JSON.stringify(next))) {
+      alert("This browser could not save the change on this device. Free up storage and try again.");
+      return false;
+    }
+    queue = next;
+    syncError = false;
     refreshView();
     setTimeout(flush, 0);
+    return true;
   }
+  const commit = (op) => commitMany([op]);
 
   /* ---------- Sync with Supabase ---------- */
   const isNetworkError = (err) => !navigator.onLine || (!!err && /fetch|network|load failed|timeout|offline/i.test(String(err.message || err)));
@@ -159,8 +185,13 @@
 
   async function flush() {
     if (!REMOTE || flushing || !queue.length || needLogin || !navigator.onLine) { updateStatus(); return; }
-    flushing = true; updateStatus();
+    flushing = true;
+    syncError = false;
+    updateStatus();
     try {
+      const admin = await confirmAdmin();
+      if (admin === null) { reachable = false; return; }
+      if (!admin) { needLogin = true; setAdmin(false, null); return; }
       while (queue.length) {
         const op = queue[0];
         try {
@@ -176,15 +207,17 @@
               toastNote("Log in as admin to sync the scores saved on this device.");
               break;
             }
-            // Still an admin, so the event was already deleted on another device: skip this change.
-          } else {
-            console.error("Supabase rejected a saved change; skipping it", op, err);
-          }
+            // The account is allowed, but the change failed. Keep it for recovery.
+            console.error("Supabase rejected a saved change", op, err);
+            syncError = true;
+            break;
+          } else { console.error("Supabase rejected a saved change", op, err); syncError = true; break; }
         }
-        queue.shift();
-        ls.set(QUEUE_KEY, JSON.stringify(queue));
+        const remaining = queue.slice(1);
+        if (!ls.set(QUEUE_KEY, JSON.stringify(remaining))) { syncError = true; break; }
+        queue = remaining;
       }
-    } finally { flushing = false; }
+    } finally { flushing = false; updateStatus(); }
     await pull();
   }
 
@@ -237,6 +270,8 @@
     } else if (n && !online) {
       setNote("is-pending", "● OFFLINE — " + plural(n, "change") + " saved on this device. They will sync automatically when the internet is back.");
       footer = "offline";
+    } else if (n && syncError) {
+      setNote("is-error", "● " + plural(n, "change") + " saved on this device, but sync failed. They will be retried. Export Backup for a copy.");
     } else if (n) {
       setNote("is-pending", "● Syncing " + plural(n, "change") + "…");
     } else if (!online) {
@@ -334,7 +369,14 @@
 
   async function syncSession(session) {
     if (!REMOTE || loggingIn) return;
-    if (!session) { setAdmin(false, null); updateStatus(); return; }
+    if (!session) {
+      // A saved session can expire while the device is offline. Keep local entry
+      // available to an admin who logged in here before; Supabase checks on sync.
+      const cachedEmail = !navigator.onLine ? ls.get(ADMIN_KEY) : null;
+      setAdmin(!!cachedEmail, cachedEmail);
+      updateStatus();
+      return;
+    }
     if (isAdmin && adminEmail === session.user.email) return;
     let ok = await confirmAdmin();
     if (ok === null) ok = ls.get(ADMIN_KEY) === session.user.email;   // offline: trust this device's last check; Supabase re-checks every change on sync
@@ -410,9 +452,9 @@
         !confirm("“" + name + "” already has scores. Add another entry for it?")) return;
     if (!(await requireAdmin())) return;
 
-    if (editingId) commit({ op: "update", id: editingId, ev: { name, scores } });
-    else commit({ op: "add", id: newId(), ev: { name, scores }, created_at: new Date().toISOString() });
-    stopEditing();
+    const saved = editingId ? commit({ op: "update", id: editingId, ev: { name, scores } })
+      : commit({ op: "add", id: newId(), ev: { name, scores }, created_at: new Date().toISOString() });
+    if (saved) stopEditing();
   });
   $("cancelEditBtn").addEventListener("click", stopEditing);
 
@@ -434,8 +476,7 @@
       const ev = events.find((x) => x.id === delBtn.dataset.delete); if (!ev) return;
       if (!confirm("Delete “" + ev.name + "”? House totals will be recalculated.")) return;
       if (!(await requireAdmin())) return;
-      if (editingId === ev.id) stopEditing();
-      commit({ op: "delete", id: ev.id });
+      if (commit({ op: "delete", id: ev.id }) && editingId === ev.id) stopEditing();
     }
   });
 
@@ -461,18 +502,19 @@
       if (!Array.isArray(incoming)) throw new Error("bad file");
       if (!confirm("Import will replace all current scores with the " + plural(incoming.length, "event") + " in this backup. Continue?")) return;
       if (!(await requireAdmin())) return;
-      stopEditing();
-      commit({ op: "clear" });
-      incoming.map(normalize).forEach((ev) => commit({ op: "add", id: isUuid(ev.id) ? ev.id : newId(), ev: { name: ev.name, scores: ev.scores }, created_at: ev.created_at }));
-      toastNote("✓ Backup imported: " + plural(incoming.length, "event"));
+      const ops = [{ op: "clear" }, ...incoming.map(normalize).map((ev) =>
+        ({ op: "add", id: isUuid(ev.id) ? ev.id : newId(), ev: { name: ev.name, scores: ev.scores }, created_at: ev.created_at }))];
+      if (commitMany(ops)) {
+        stopEditing();
+        toastNote("✓ Backup imported: " + plural(incoming.length, "event"));
+      }
     } catch (err) { alert("That backup file could not be read."); }
   });
 
   $("resetBtn").addEventListener("click", async () => {
     if (!confirm("Reset ALL event records and house scores? Export a backup first if you may need these scores.")) return;
     if (!(await requireAdmin())) return;
-    stopEditing();
-    commit({ op: "clear" });
+    if (commit({ op: "clear" })) stopEditing();
   });
 
   /* ---------- Install as app + offline support ---------- */

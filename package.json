@@ -7,7 +7,8 @@
   "scripts": {
     "build": "node scripts/write-config.mjs",
     "dev": "node scripts/write-config.mjs && node scripts/serve.mjs",
-    "start": "node scripts/serve.mjs"
+    "start": "node scripts/serve.mjs",
+    "test:offline": "node scripts/test-offline.mjs"
   },
   "engines": { "node": ">=18" }
 }

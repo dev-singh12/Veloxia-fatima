@@ -72,9 +72,11 @@ Import the GitHub repo at vercel.com/new and add two environment variables befor
 
 ## How offline sync works
 
-1. An admin logs in once while online. The login stays on that device.
+1. Open the site once while online so the page and scripts can be cached. An admin should also log in once while online on the device used to enter points.
 2. Every change is written to the device first (`localStorage`), so the scoreboard updates instantly with or without internet.
-3. Waiting changes are sent to Supabase in order as soon as the connection returns. The status line shows how many are waiting.
+3. Waiting changes are sent to Supabase in order as soon as the connection returns. Rejected changes remain on the device and the status line shows them. A full browser storage error prevents the edit and leaves the form filled in.
 4. Other devices see offline changes only after the admin’s device reconnects. For an event with no internet at all, connect the admin laptop to the projector.
 
 Don’t clear browser data or use private/incognito mode on the admin device while changes are waiting.
+
+Run `npm run test:offline` to check offline reload, queued edits, reconnection, storage failure, and the service worker cache.
