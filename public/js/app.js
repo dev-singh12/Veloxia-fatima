@@ -256,6 +256,42 @@
     $("eventTotals").innerHTML = `<tr class="totalrow"><td colspan="2">Total Points</td>${HOUSES.map((h) => `<td class="num" style="color:${h.color}">${fmt(t[h.key])}</td>`).join("")}<td class="event-actions"></td></tr>`;
 
     document.title = events.length && t[order[0].key] > 0 ? "Fatima School — " + order[0].name + " leads" : "Fatima Veloxia 2K26 — Live House Scoreboard";
+    renderWinner(t);
+  }
+
+  /* ---------- Winner screen (?winner=1) ---------- */
+  const WINNER_MODE = new URLSearchParams(location.search).get("winner") === "1";
+  let shownWinners = null;
+  function renderWinner(t) {
+    if (!WINNER_MODE) return;
+    const top = Math.max(...HOUSES.map((h) => t[h.key]));
+    const winners = top > 0 ? HOUSES.filter((h) => t[h.key] === top) : [];   // a tie shows joint winners
+    const key = winners.map((h) => h.key).join();
+    if (key === shownWinners) return;
+    shownWinners = key;
+    const stage = $("winnerStage");
+    stage.className = "winner-stage " + (!winners.length ? "waiting" : winners.length > 1 ? "tie" : winners[0].cls);
+    $("winnerTitle").textContent = !winners.length ? "Winner to be announced" : winners.length > 1 ? "Joint Winners" : "Winner";
+    $("winnerNames").innerHTML = winners.map((h) => `<div class="winner-name ${h.cls}">${esc(h.name.replace(/ House$/, ""))}</div>`).join('<div class="winner-amp">&amp;</div>') +
+      (winners.length ? `<div class="winner-house">${winners.length > 1 ? "Houses" : "House"}</div>` : "");
+    void stage.offsetWidth;            // restart the entrance animation each time the winner changes
+    stage.classList.add("reveal");
+    document.title = winners.length ? "🏆 " + winners.map((h) => h.name).join(" & ") + " — Winner" : "Fatima Veloxia 2K26 — Winner";
+  }
+  function startWinnerScreen() {
+    document.body.classList.add("winnermode");
+    const colors = ["var(--win)", "var(--win)", "#ffd447", "#fff3c4", "#ffb21a"];
+    $("winnerConfetti").innerHTML = Array.from({ length: 70 }, () => {
+      const r = (a, b) => a + Math.random() * (b - a);
+      return `<i style="left:${r(0, 100).toFixed(1)}%;--c:${colors[Math.floor(Math.random() * colors.length)]};--dx:${r(-12, 12).toFixed(1)}vw;--r:${Math.round(r(360, 1080))}deg;` +
+        `animation-duration:${r(6, 13).toFixed(1)}s;animation-delay:-${r(0, 13).toFixed(1)}s"></i>`;
+    }).join("");
+    $("winnerFsBtn").addEventListener("click", toggleFullscreen);
+    $("winnerStage").addEventListener("dblclick", toggleFullscreen);
+  }
+  function toggleFullscreen() {
+    if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
+    else if (document.documentElement.requestFullscreen) document.documentElement.requestFullscreen().catch(() => {});
   }
 
   const plural = (n, w) => n + " " + w + (n === 1 ? "" : "s");
@@ -496,6 +532,7 @@
 
   /* ---------- Buttons ---------- */
   $("displayBtn").addEventListener("click", () => window.open(location.origin + location.pathname + "?display=1", "FatimaScoreboardDisplay", "noopener"));
+  $("winnerBtn").addEventListener("click", () => window.open(location.origin + location.pathname + "?winner=1", "FatimaScoreboardWinner", "noopener"));
 
   $("exportBtn").addEventListener("click", () => {
     const data = { app: "Fatima Veloxia 2K26 Scoreboard", version: 2, exportedAt: new Date().toISOString(), events };
@@ -549,6 +586,7 @@
   if (new URLSearchParams(location.search).get("display") === "1") {
     document.body.classList.add("displaymode");
   }
+  if (WINNER_MODE) startWinnerScreen();
   // Restore a saved admin login straight away: without internet, Supabase can take ~30 s to report it.
   const restored = REMOTE ? savedLogin() : null;
   setAdmin(!REMOTE || !!restored, restored);

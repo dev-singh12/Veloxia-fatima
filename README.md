@@ -6,6 +6,7 @@ Live house scoreboard for **Fatima, Carmel, Lourdes and Velankani** houses.
 - **Online sync.** When there is internet, changes go to Supabase and every screen updates live.
 - **Admin login.** Anyone with the link can view; only admins (Supabase email + password) can add, edit or delete points.
 - **Big-screen display.** Open `/?display=1` on the projector for a clean, read-only view.
+- **Winner screen.** **🏆 Display Winner** opens `/?winner=1`: just the trophy and the leading house's name, updating live (joint winners on a tie). Double-click or use Full Screen for the projector.
 - **No Supabase settings?** The app runs in local-only offline mode, exactly like the original single-file scoreboard.
 
 ## Project layout

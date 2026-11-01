@@ -213,3 +213,56 @@ body:not(.remote) .remote-only{display:none!important}
 .card.bump .score{animation:bump .6s ease}
 @keyframes bump{35%{transform:scale(1.08)}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* ---- Winner screen (?winner=1): trophy and house name only, updates live ---- */
+.winnermode header,.winnermode .wrap,.winnermode .footer{display:none!important}
+.winnermode{overflow:hidden}
+.winner-stage,.winner-name{--win:#ffd447;--win-deep:#b77a08;--win-glow:rgba(255,200,60,.42)}
+.winner-stage.fatima,.winner-name.fatima{--win:#ffd51c;--win-deep:#a86f00;--win-glow:rgba(255,205,40,.48)}
+.winner-stage.carmel,.winner-name.carmel{--win:#ff3550;--win-deep:#a5001d;--win-glow:rgba(255,45,75,.45)}
+.winner-stage.lourdes,.winner-name.lourdes{--win:#19c983;--win-deep:#05603f;--win-glow:rgba(25,200,130,.42)}
+.winner-stage.velankani,.winner-name.velankani{--win:#3d8bff;--win-deep:#0a3d99;--win-glow:rgba(60,135,255,.48)}
+.winner-stage{position:fixed;inset:0;z-index:50;display:flex;align-items:center;justify-content:center;overflow:hidden;text-align:center;
+  background:radial-gradient(ellipse at 50% 40%,var(--win-glow) 0%,transparent 52%),radial-gradient(ellipse at 50% 115%,#4a1606 0%,transparent 58%),linear-gradient(180deg,#14060a 0%,#06102a 55%,#03060f 100%)}
+.winner-rays{position:absolute;left:50%;top:40%;width:220vmax;height:220vmax;margin:-110vmax 0 0 -110vmax;opacity:.6;
+  background:repeating-conic-gradient(from 0deg,var(--win-glow) 0deg 5deg,transparent 5deg 15deg);
+  -webkit-mask-image:radial-gradient(circle,#000 0%,transparent 34%);mask-image:radial-gradient(circle,#000 0%,transparent 34%);
+  animation:winSpin 80s linear infinite}
+.winner-confetti{position:absolute;inset:0;pointer-events:none;z-index:1}
+.winner-confetti i{position:absolute;top:0;width:.55vmax;height:1.1vmax;min-width:5px;min-height:9px;border-radius:2px;background:var(--c);opacity:.85;animation:winFall linear infinite}
+.winner-stage.waiting .winner-confetti{display:none}
+.winner-inner{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;padding:3vh 16px;max-width:100%}
+.winner-kicker{font-family:'Cinzel',Georgia,serif;font-weight:900;color:#ffe9a3;font-size:clamp(12px,1.7vw,26px);letter-spacing:.38em;padding-left:.38em;text-transform:uppercase;text-shadow:0 2px 6px #000}
+.winner-trophy-wrap{position:relative;margin-top:1.2vh;animation:winFloat 5s ease-in-out infinite}
+.winner-trophy{display:block;width:min(40vh,64vw);height:auto;filter:drop-shadow(0 0 34px var(--win-glow)) drop-shadow(0 0 10px #ffd44788) drop-shadow(0 18px 22px #000c)}
+.spark{position:absolute;width:clamp(10px,2.2vh,26px);height:clamp(10px,2.2vh,26px);background:#fff6c8;clip-path:polygon(50% 0,62% 38%,100% 50%,62% 62%,50% 100%,38% 62%,0 50%,38% 38%);filter:drop-shadow(0 0 6px #ffd447);animation:winTwinkle 2.4s ease-in-out infinite}
+.winner-title{margin-top:1.4vh;display:flex;align-items:center;gap:.8em;font-family:'Cinzel',Georgia,serif;font-weight:900;color:#fff3c4;font-size:clamp(16px,2.6vw,40px);letter-spacing:.5em;padding-left:.5em;text-transform:uppercase;text-shadow:0 2px 8px #000}
+.winner-title:before,.winner-title:after{content:"";width:clamp(28px,8vw,150px);height:2px;background:linear-gradient(90deg,transparent,#ffd447)}
+.winner-title:after{background:linear-gradient(270deg,transparent,#ffd447)}
+.winner-names{display:flex;flex-direction:column;align-items:center;margin-top:.6vh}
+.winner-name{font-family:'Cinzel',Georgia,serif;font-weight:900;text-transform:uppercase;line-height:1.02;letter-spacing:.04em;font-size:clamp(34px,min(12vw,19vh),210px);
+  background:linear-gradient(100deg,#e9a312 0%,#ffe27a 28%,#fffbe8 44%,#ffe27a 56%,#e9a312 76%,#ffd65a 100%);background-size:260% 100%;
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  filter:drop-shadow(0 3px 0 #5a2a05) drop-shadow(0 10px 16px #000) drop-shadow(0 0 26px var(--win-glow));animation:winShine 6s ease-in-out infinite}
+.winner-amp{font-family:'Cinzel',Georgia,serif;font-weight:900;color:#ffe9a3;font-size:clamp(22px,4vh,52px);line-height:1;text-shadow:0 2px 8px #000}
+.winner-stage.tie .winner-name{font-size:clamp(28px,min(8.5vw,10vh),150px)}
+.winner-stage.tie .winner-trophy{width:min(30vh,52vw)}
+.winner-house{margin-top:1.4vh;padding:.38em 1.3em .38em 1.9em;border-radius:999px;font-family:'Arial Black',Arial,sans-serif;font-weight:900;font-size:clamp(13px,2.3vw,36px);letter-spacing:.6em;text-transform:uppercase;color:#fff;
+  background:linear-gradient(90deg,var(--win-deep),var(--win) 50%,var(--win-deep));box-shadow:0 0 26px var(--win-glow),0 6px 16px #000a,inset 0 0 0 2px #ffe9a3;text-shadow:0 2px 3px #0009}
+.winner-stage.fatima .winner-house{color:#2a1300;text-shadow:0 1px 0 #fff6}
+.winner-stage.waiting .winner-trophy{filter:grayscale(.35) brightness(.8) drop-shadow(0 18px 22px #000c)}
+.winner-stage.waiting .winner-title{letter-spacing:.22em;padding-left:.22em;font-size:clamp(15px,2.4vw,36px)}
+.winner-stage.reveal .winner-trophy{animation:winPop 1.1s cubic-bezier(.2,1.35,.4,1) both}
+.winner-stage.reveal .winner-title{animation:winRise .8s .55s both}
+.winner-stage.reveal .winner-names{animation:winRise .9s .8s both}
+.winner-fs{position:absolute;right:14px;bottom:14px;z-index:3;padding:8px 12px;font-size:13px;opacity:.35;transition:opacity .2s}
+.winner-fs:hover,.winner-fs:focus-visible{opacity:1}
+html:fullscreen .winner-fs{display:none}
+@keyframes winSpin{to{transform:rotate(360deg)}}
+@keyframes winFloat{50%{transform:translateY(-1.4vh)}}
+@keyframes winTwinkle{0%,100%{transform:scale(.3) rotate(0);opacity:.2}50%{transform:scale(1) rotate(45deg);opacity:1}}
+@keyframes winShine{0%,15%{background-position:100% 0}60%,100%{background-position:0 0}}
+@keyframes winPop{0%{transform:scale(.35) translateY(10vh);opacity:0}100%{transform:none;opacity:1}}
+@keyframes winRise{0%{transform:translateY(4vh);opacity:0}100%{transform:none;opacity:1}}
+@keyframes winFall{0%{transform:translate3d(0,-6vh,0) rotate(0)}100%{transform:translate3d(var(--dx),106vh,0) rotate(var(--r))}}
+@media (prefers-reduced-motion:reduce){.winner-confetti{display:none}}

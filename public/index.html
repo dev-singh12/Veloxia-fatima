@@ -38,6 +38,7 @@
 <p class="muted offline-note" id="syncNote" role="status">● OFFLINE MODE — scores are saved automatically on this computer.</p>
 <div class="buttons">
 <button type="button" class="secondary" id="displayBtn">↗ Open Big-Screen Display</button>
+<button type="button" class="secondary" id="winnerBtn">🏆 Display Winner</button>
 <button type="button" class="secondary" id="exportBtn">Export Backup</button>
 <button type="button" class="secondary admin-only" id="importBtn">Import Backup</button>
 <button type="button" class="danger admin-only" id="resetBtn">Reset All Scores</button>
@@ -70,6 +71,21 @@
 <p class="error" id="pwError" role="alert"></p>
 </form></div></div>
 </div><div class="footer"><span id="footerStatus"></span>Fatima School • ANNUAL SPORTS &amp; P. T DISPLAY</div>
+
+<section id="winnerStage" class="winner-stage waiting hidden" aria-live="polite">
+<div class="winner-rays" aria-hidden="true"></div>
+<div class="winner-confetti" id="winnerConfetti" aria-hidden="true"></div>
+<div class="winner-inner">
+<div class="winner-kicker">Fatima Veloxia 2K26</div>
+<div class="winner-trophy-wrap">
+<span class="spark" style="left:6%;top:18%"></span><span class="spark" style="right:4%;top:10%;animation-delay:.7s"></span><span class="spark" style="left:0;top:58%;animation-delay:1.4s"></span><span class="spark" style="right:0;top:50%;animation-delay:.35s"></span><span class="spark" style="left:22%;top:-2%;animation-delay:1.1s"></span><span class="spark" style="right:20%;top:78%;animation-delay:1.8s"></span>
+<svg class="winner-trophy" viewBox="0 0 160 180" role="img" aria-label="Winner's trophy"><defs><linearGradient id="wGold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff6b8"/><stop offset=".28" stop-color="#ffe04a"/><stop offset=".62" stop-color="#f2a600"/><stop offset="1" stop-color="#ffeb8a"/></linearGradient><linearGradient id="wCup" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff07e"/><stop offset="1" stop-color="#d08300"/></linearGradient></defs><ellipse cx="80" cy="166" rx="52" ry="7" fill="#000" opacity=".45"/><path d="M35 25H125L116 83Q110 111 80 119Q50 111 44 83Z" fill="url(#wGold)" stroke="#fff3b0" stroke-width="3"/><path d="M35 31H14V49Q15 78 48 83L51 69Q31 64 30 46H39Z" fill="url(#wGold)" stroke="#e8a400" stroke-width="4"/><path d="M125 31H146V49Q145 78 112 83L109 69Q129 64 130 46H121Z" fill="url(#wGold)" stroke="#e8a400" stroke-width="4"/><path d="M48 35H112L106 79Q102 96 80 103Q58 96 54 79Z" fill="url(#wCup)"/><path d="M80 42L86 60L105 60L90 72L96 91L80 79L64 91L70 72L55 60L74 60Z" style="fill:var(--win-deep)" stroke="#fff3b0" stroke-width="2.5" stroke-linejoin="round"/><path d="M57 38Q53 66 64 92" fill="none" stroke="#fff" stroke-opacity=".6" stroke-width="5" stroke-linecap="round"/><path d="M68 116H92V139H68Z" fill="url(#wGold)"/><path d="M53 138H107V151H53Z" style="fill:var(--win)" stroke="#ffe77a" stroke-width="2"/><path d="M39 151H121V163H39Z" fill="url(#wGold)" stroke="#fff3b0" stroke-width="2"/></svg>
+</div>
+<div class="winner-title" id="winnerTitle">Winner to be announced</div>
+<div class="winner-names" id="winnerNames"></div>
+</div>
+<button type="button" class="winner-fs" id="winnerFsBtn">⛶ Full Screen</button>
+</section>
 
 <script src="/js/config.js"></script>
 <script src="/js/vendor/supabase.js"></script>
