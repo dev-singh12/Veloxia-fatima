@@ -201,7 +201,7 @@
   function render() {
     const t = totals();
     const order = [...HOUSES].sort((a, b) => t[b.key] - t[a.key] || a.name.localeCompare(b.name));
-    const rankOf = (h) => 1 + HOUSES.filter((o) => t[o.key] > t[h.key]).length;   // ties share a rank
+    const rankOf = (h) => 1 + new Set(HOUSES.filter((o) => t[o.key] > t[h.key]).map((o) => t[o.key])).size;   // ties share a rank
 
     $("cards").innerHTML = order.map((h) => {
       const r = rankOf(h), lead = r === 1 && t[h.key] > 0;
