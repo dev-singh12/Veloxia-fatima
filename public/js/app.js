@@ -310,7 +310,7 @@
     try {
       const res = await db.auth.signInWithPassword({ email, password });
       if (res.error) {
-        err.textContent = /invalid/i.test(res.error.message) ? "Email or password is incorrect."
+        err.textContent = /invalid login credentials/i.test(res.error.message) ? "Email or password is incorrect."
           : /confirm/i.test(res.error.message) ? "This login isn’t confirmed yet. Confirm the user in Supabase and try again."
           : "Couldn’t log in: " + res.error.message;
         return;
