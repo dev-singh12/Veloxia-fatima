@@ -1,6 +1,6 @@
 # Fatima Veloxia 2K26 — Live House Scoreboard
 
-Live house scoreboard for **Fatima, Carmel, Lourdes and Velankani** houses.
+Live house scoreboard for **Fatima, Carmel, Lourdes and Velankanni** houses.
 
 - **Offline-first.** Points are saved on the device instantly and the app opens with no internet after the first visit.
 - **Online sync.** When there is internet, changes go to Supabase and every screen updates live.

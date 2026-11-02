@@ -12,7 +12,7 @@
     { key: "fatima",    name: "Fatima House",    color: "#f7c900", cls: "fatima",    input: "pFatima" },
     { key: "carmel",    name: "Carmel House",    color: "#d7193f", cls: "carmel",    input: "pCarmel" },
     { key: "lourdes",   name: "Lourdes House",   color: "#702b16", cls: "lourdes",   input: "pLourdes" },
-    { key: "velankani", name: "Velankani House", color: "#003b91", cls: "velankani", input: "pVelankani" }
+    { key: "velankani", name: "Velankanni House", color: "#003b91", cls: "velankani", input: "pVelankani" }
   ];
   const SPORTS_EVENTS = [
     "SPRINT TO GLORY 100M BOYS (5 & 6)",
