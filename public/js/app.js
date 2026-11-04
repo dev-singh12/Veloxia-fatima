@@ -27,7 +27,8 @@
     "ONE TEAM, ONE DREAM - 4×100 RELAY RACE BOYS (SUB JUNIOR)",
     "ONE TEAM, ONE DREAM - 4×100 RELAY RACE BOYS (JUNIOR)",
     "ONE TEAM, ONE DREAM - 4×100 RELAY RACE BOYS (SENIOR)",
-    "HOUSE POSITION"
+    "HOUSE POSITION",
+    "BOARD DECORATION"
   ];
   // Counted in house totals but not listed as a row, as in the original design.
   const HIDDEN_FROM_TABLE = "HOUSE POSITION";
